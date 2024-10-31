@@ -35,6 +35,12 @@ DOTNET_RUNTIME_VERSION=${DOTNET_RUNTIME_VERSION:-8.0.10}
 BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
 
 info "Installing dotnet"
+
+if [ ! -f "${BUILD_DIR}/.heroku/dotnet/dotnet" ]; then
+  echo "Error: dotnet executable not found in ${BUILD_DIR}/.heroku/dotnet"
+  exit 1
+fi
+
 install_dotnet $BUILD_DIR $CACHE_DIR $DOTNET_SDK_VERSION $DOTNET_RUNTIME_VERSION
 
 export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
