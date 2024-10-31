@@ -34,14 +34,25 @@ DOTNET_SDK_VERSION=${DOTNET_SDK_VERSION:-8.0.403}
 DOTNET_RUNTIME_VERSION=${DOTNET_RUNTIME_VERSION:-8.0.10}
 BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
 
+install_dotnet() {
+    local build_dir=$1
+    local cache_dir=$2
+    local sdk_version=$3
+    local runtime_version=$4
+
+    mkdir -p "$build_dir/.heroku/dotnet"
+    echo "Downloading .NET SDK version $sdk_version and runtime $runtime_version..."
+    curl -sSL "https://dotnetcli.azureedge.net/dotnet/Sdk/$sdk_version/dotnet-sdk-$sdk_version-linux-x64.tar.gz" | tar -xz -C "$build_dir/.heroku/dotnet"
+}
+
+
 info "Installing dotnet"
+install_dotnet $BUILD_DIR $CACHE_DIR $DOTNET_SDK_VERSION $DOTNET_RUNTIME_VERSION
 
 if [ ! -f "${BUILD_DIR}/.heroku/dotnet/dotnet" ]; then
   echo "Error: dotnet executable not found in ${BUILD_DIR}/.heroku/dotnet"
   exit 1
 fi
-
-install_dotnet $BUILD_DIR $CACHE_DIR $DOTNET_SDK_VERSION $DOTNET_RUNTIME_VERSION
 
 export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
 
